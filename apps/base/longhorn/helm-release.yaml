@@ -1,16 +1,19 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: longhorn
   namespace: longhorn-system
 spec:
   interval: 10m
+  install:
+    createNamespace: false
   chart:
     spec:
       chart: longhorn
       sourceRef:
         kind: HelmRepository
         name: longhorn-repo
+        namespace: flux-system
       version: ">=1.10.0 <2.0.0"
   values:
     persistence:
@@ -19,20 +22,16 @@ spec:
       defaultFsType: ext4
       reclaimPolicy: Delete
       volumeBindingMode: Immediate
-
     defaultSettings:
       defaultDataPath: /var/lib/longhorn
       defaultReplicaCount: '{"v1":"1","v2":"1"}'
       allowVolumeCreationWithDegradedAvailability: true
       autoSalvage: true
-
     longhornUI:
       replicas: 1
-
     service:
       ui:
         type: NodePort
         nodePort: 30080
-
     csi:
       kubeletRootDir: /var/lib/kubelet
