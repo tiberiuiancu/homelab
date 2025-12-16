@@ -3,3 +3,4 @@ kind: Kustomization
 namespace: longhorn-system
 resources:
   - helm-release.yaml
+  - helm-repo.yaml
