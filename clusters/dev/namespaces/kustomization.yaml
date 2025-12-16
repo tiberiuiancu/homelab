@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- cloud-namespace.yaml
+- network-namespace.yaml
+- ux-namespace.yaml
+- web-namespace.yaml
