@@ -4,4 +4,3 @@ namespace: longhorn-system
 resources:
   - controller.yaml
   - crd.yaml
-
