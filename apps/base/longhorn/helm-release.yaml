@@ -1,0 +1,48 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: longhorn-repo
+  namespace: flux-system
+spec:
+  url: https://charts.longhorn.io
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: longhorn
+  namespace: longhorn-system
+interval: 5m
+chart:
+  spec:
+    chart: longhorn
+    version: "1.4.2"
+    sourceRef:
+      kind: HelmRepository
+      name: longhorn-repo
+      namespace: flux-system
+install:
+  createNamespace: true
+values: |
+  persistence:
+    defaultClass: true
+    defaultClassReplicaCount: 1
+    defaultFsType: ext4
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+
+  defaultSettings:
+    defaultDataPath: /var/lib/longhorn
+    defaultReplicaCount: '{"v1":"1","v2":"1"}'
+    allowVolumeCreationWithDegradedAvailability: true
+    autoSalvage: true
+
+  longhornUI:
+    replicas: 1
+
+  service:
+    ui:
+      type: NodePort
+      nodePort: 30080
+
+  csi:
+    kubeletRootDir: /var/lib/kubelet
